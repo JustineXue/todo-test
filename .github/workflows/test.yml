@@ -29,48 +29,15 @@ jobs:
     - name: Run tests with pytest
       run: |
         mkdir -p test-results
-        # Run tests with verbose output and generate JUnit XML report
-        pytest test_app.py -v --tb=short --junitxml=test-results/junit.xml | tee test-results/test-output.txt
+        # Run tests with verbose output
+        pytest test_app.py -v --tb=short | tee test-results/test-output.txt
       continue-on-error: false
-
-    - name: Generate test summary
-      if: always()
-      run: |
-        echo "# Test Results Summary" > test-results/summary.md
-        echo "" >> test-results/summary.md
-        echo "## Test Execution Details" >> test-results/summary.md
-        echo "- **Date:** $(date)" >> test-results/summary.md
-        echo "- **Python Version:** $(python --version)" >> test-results/summary.md
-        echo "- **Pytest Version:** $(pytest --version)" >> test-results/summary.md
-        echo "" >> test-results/summary.md
-        echo "## Test Output" >> test-results/summary.md
-        echo '```' >> test-results/summary.md
-        cat test-results/test-output.txt >> test-results/summary.md
-        echo '```' >> test-results/summary.md
-
-    - name: Save test results to repo
-      if: always()
-      run: |
-        # Configure git
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        
-        # Add test results to git
-        git add test-results/
-        
-        # Commit the test results (skip if no changes)
-        if git diff --staged --quiet; then
-          echo "No test results to commit"
-        else
-          git commit -m "Update test results from GitHub Actions [skip ci]"
-          git push
-        fi
 
     - name: Upload Test Results
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: test-results
-        path: test-results/**
+        name: test-output
+        path: test-results/test-output.txt
         if-no-files-found: error
         retention-days: 30
