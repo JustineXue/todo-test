@@ -1,13 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flasgger import Swagger
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///todo.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
-
-swagger = Swagger(app)
 
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -244,4 +241,4 @@ def api_delete_todo(todo_id):
 with app.app_context():
     db.create_all()
 
-app.run(debug=True)
+app.run(debug=True, port=5001)

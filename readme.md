@@ -42,7 +42,9 @@ This project is a simple Todo application built with Flask. It supports both a w
 
 
 4. Run the app:
-   python app.py
+   cd /Users/justinexue/Downloads/flask-todo-app (don't need to be in venv)
+   .venv/bin/python app.py
+   <!-- python app.py -->
 
 
    The app will be accessible at: [http://127.0.0.1:5000](http://127.0.0.1:5000)
