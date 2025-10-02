@@ -29,8 +29,8 @@ jobs:
     - name: Run tests with pytest
       run: |
         mkdir -p test-results
-        # Run tests with verbose output and generate HTML report
-        pytest test_app.py -v --tb=short --html=test-results/test-report.html --self-contained-html --junitxml=test-results/junit.xml | tee test-results/test-output.txt
+        # Run tests with verbose output and generate JUnit XML report
+        pytest test_app.py -v --tb=short --junitxml=test-results/junit.xml | tee test-results/test-output.txt
       continue-on-error: false
 
     - name: Generate test summary
