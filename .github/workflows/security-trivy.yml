@@ -1,0 +1,114 @@
+name: Trivy Vulnerability Scan
+
+on:
+  push:
+    branches:
+      - '**'  # Trigger on any branch push
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '0 4 * * 1'  # Weekly on Monday at 4 AM
+
+jobs:
+  trivy-security-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: Run Trivy with JSON output
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'json'
+        output: 'trivy-results.json'
+
+    - name: Generate Trivy Report
+      if: always()
+      run: |
+        mkdir -p security-results
+        
+        # Create a readable text report from Trivy results
+        echo "Trivy Vulnerability Scan Report" > security-results/trivy-report.txt
+        echo "===============================" >> security-results/trivy-report.txt
+        echo "" >> security-results/trivy-report.txt
+        echo "Scan Date: $(date)" >> security-results/trivy-report.txt
+        echo "Repository: ${{ github.repository }}" >> security-results/trivy-report.txt
+        echo "Branch: ${{ github.ref_name }}" >> security-results/trivy-report.txt
+        echo "Commit: ${{ github.sha }}" >> security-results/trivy-report.txt
+        echo "" >> security-results/trivy-report.txt
+        
+        # Process JSON results if available
+        if [ -f trivy-results.json ]; then
+          echo "Processing Trivy JSON results..." >> security-results/trivy-report.txt
+          echo "" >> security-results/trivy-report.txt
+          
+          # Use jq to parse JSON and create readable output
+          if command -v jq &> /dev/null; then
+            echo "Vulnerability Summary:" >> security-results/trivy-report.txt
+            echo "--------------------" >> security-results/trivy-report.txt
+            
+            # Count vulnerabilities by severity
+            echo "Critical: $(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length' trivy-results.json)" >> security-results/trivy-report.txt
+            echo "High: $(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity == "HIGH")] | length' trivy-results.json)" >> security-results/trivy-report.txt
+            echo "Medium: $(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity == "MEDIUM")] | length' trivy-results.json)" >> security-results/trivy-report.txt
+            echo "Low: $(jq '[.Results[]?.Vulnerabilities[]? | select(.Severity == "LOW")] | length' trivy-results.json)" >> security-results/trivy-report.txt
+            echo "" >> security-results/trivy-report.txt
+            
+            echo "Detailed Vulnerabilities:" >> security-results/trivy-report.txt
+            echo "------------------------" >> security-results/trivy-report.txt
+            
+            # Extract detailed vulnerability information
+            jq -r '.Results[]?.Vulnerabilities[]? | 
+              "Vulnerability ID: " + (.VulnerabilityID // "Unknown") + 
+              "\nSeverity: " + (.Severity // "Unknown") + 
+              "\nPackage: " + (.PkgName // "Unknown") + " " + (.InstalledVersion // "Unknown") + 
+              "\nDescription: " + (.Description // "No description") + 
+              "\nFixed Version: " + (.FixedVersion // "Not available") + 
+              "\nReferences: " + (.References[]? // "None" | tostring) + 
+              "\n---\n"' trivy-results.json >> security-results/trivy-report.txt || echo "No vulnerabilities found or error parsing JSON" >> security-results/trivy-report.txt
+          else
+            echo "jq not available, showing raw JSON structure:" >> security-results/trivy-report.txt
+            head -50 trivy-results.json >> security-results/trivy-report.txt
+          fi
+        else
+          echo "No JSON results found. Check Trivy action logs for details." >> security-results/trivy-report.txt
+        fi
+        
+        # Copy raw files for detailed analysis
+        if [ -f trivy-results.sarif ]; then
+          cp trivy-results.sarif security-results/trivy-results.sarif
+        fi
+        if [ -f trivy-results.json ]; then
+          cp trivy-results.json security-results/trivy-results.json
+        fi
+
+    - name: Upload Trivy Security Results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: trivy-security-results
+        path: security-results/
+        if-no-files-found: error
+        retention-days: 30

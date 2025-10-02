@@ -1,0 +1,96 @@
+name: OWASP ZAP Security Scan
+
+on:
+  push:
+    branches:
+      - '**'  # Trigger on any branch push
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '0 2 * * 1'  # Weekly on Monday at 2 AM
+
+jobs:
+  zap-security-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Start Flask app
+      run: |
+        python app.py &
+        sleep 10
+      continue-on-error: false
+
+    - name: Run OWASP ZAP Baseline Scan
+      uses: zaproxy/action-baseline@v0.7.0
+      with:
+        target: 'http://localhost:5001'
+        rules_file_name: '.zap/rules.tsv'
+        cmd_options: '-a'
+
+    - name: Run OWASP ZAP Full Scan
+      uses: zaproxy/action-full-scan@v0.4.0
+      with:
+        target: 'http://localhost:5001'
+        rules_file_name: '.zap/rules.tsv'
+        cmd_options: '-a'
+
+    - name: Generate ZAP Report
+      run: |
+        mkdir -p security-results
+        
+        # Create a simple report
+        echo "OWASP ZAP Security Scan Report" > security-results/zap-report.txt
+        echo "===============================" >> security-results/zap-report.txt
+        echo "" >> security-results/zap-report.txt
+        echo "Scan Date: $(date)" >> security-results/zap-report.txt
+        echo "Repository: ${{ github.repository }}" >> security-results/zap-report.txt
+        echo "Branch: ${{ github.ref_name }}" >> security-results/zap-report.txt
+        echo "Commit: ${{ github.sha }}" >> security-results/zap-report.txt
+        echo "" >> security-results/zap-report.txt
+        
+        # Check for ZAP results
+        if [ -f zap-report.json ]; then
+          echo "ZAP JSON report found. Processing..." >> security-results/zap-report.txt
+          echo "Raw JSON content:" >> security-results/zap-report.txt
+          echo "----------------" >> security-results/zap-report.txt
+          head -50 zap-report.json >> security-results/zap-report.txt
+        elif [ -f zap-report.html ]; then
+          echo "ZAP HTML report found." >> security-results/zap-report.txt
+          echo "HTML report summary:" >> security-results/zap-report.txt
+          echo "-------------------" >> security-results/zap-report.txt
+          grep -i "alert\|vulnerability\|risk" zap-report.html | head -20 >> security-results/zap-report.txt
+        else
+          echo "No ZAP report files found." >> security-results/zap-report.txt
+          echo "Check ZAP action logs for scan results." >> security-results/zap-report.txt
+        fi
+        
+        # Copy any available ZAP reports
+        if [ -f zap-report.json ]; then
+          cp zap-report.json security-results/
+        fi
+        if [ -f zap-report.html ]; then
+          cp zap-report.html security-results/
+        fi
+
+    - name: Upload ZAP Security Results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: zap-security-results
+        path: security-results/
+        if-no-files-found: error
+        retention-days: 30
