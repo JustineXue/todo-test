@@ -4,34 +4,34 @@ set -e
 # Directories
 ARTIFACT_DIR="../artifacts"
 
-echo "📥 Fetching latest test-output artifact from GitHub Actions..."
+echo "📥 Fetching latest trivy-security-results artifact from GitHub Actions..."
 
 # Download the latest artifact named "test-output"
-gh run download --name "test-output" --dir "$ARTIFACT_DIR"
+gh run download --name "trivy-security-results" --dir "$ARTIFACT_DIR"
 
 # Verify the file exists
-TEST_OUTPUT_FILE="$ARTIFACT_DIR/test-output.txt"
-if [[ -f "$TEST_OUTPUT_FILE" ]]; then
-    echo "✅ Test results downloaded to $TEST_OUTPUT_FILE"
+SCAN_OUTPUT_FILE="$ARTIFACT_DIR/trivy-results.json"
+if [[ -f "$SCAN_OUTPUT_FILE" ]]; then
+    echo "✅ Security scan results downloaded to $SCAN_OUTPUT_FILE"
     echo
-    echo "📄 Test output preview:"
+    echo "📄 Trivy output preview:"
     echo "--------------------------------"
-    tail -n 20 "$TEST_OUTPUT_FILE"
+    tail -n 20 "$SCAN_OUTPUT_FILE"
     echo "--------------------------------"
 else
-    echo "❌ Could not find test-output.txt in artifact."
+    echo "❌ Could not find trivy-results.json in artifact."
     exit 1
 fi
 
-# Run Trivy scan and save JSON results
-TRIVY_OUTPUT_FILE="$ARTIFACT_DIR/trivy-results.json"
-echo
-echo "🔍 Running Trivy scan and saving results to $TRIVY_OUTPUT_FILE..."
-trivy fs --format json . > "$TRIVY_OUTPUT_FILE"
+# # Run Trivy scan and save JSON results
+# TRIVY_OUTPUT_FILE="$ARTIFACT_DIR/trivy-results.json"
+# echo
+# echo "🔍 Running Trivy scan and saving results to $TRIVY_OUTPUT_FILE..."
+# trivy fs --format json . > "$TRIVY_OUTPUT_FILE"
 
-if [[ -f "$TRIVY_OUTPUT_FILE" ]]; then
-    echo "✅ Trivy results saved to $TRIVY_OUTPUT_FILE"
-else
-    echo "❌ Trivy scan failed or output not found."
-    exit 1
-fi
+# if [[ -f "$TRIVY_OUTPUT_FILE" ]]; then
+#     echo "✅ Trivy results saved to $TRIVY_OUTPUT_FILE"
+# else
+#     echo "❌ Trivy scan failed or output not found."
+#     exit 1
+# fi
