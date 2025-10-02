@@ -48,6 +48,24 @@ jobs:
         cat test-results/test-output.txt >> test-results/summary.md
         echo '```' >> test-results/summary.md
 
+    - name: Save test results to repo
+      if: always()
+      run: |
+        # Configure git
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        # Add test results to git
+        git add test-results/
+        
+        # Commit the test results (skip if no changes)
+        if git diff --staged --quiet; then
+          echo "No test results to commit"
+        else
+          git commit -m "Update test results from GitHub Actions [skip ci]"
+          git push
+        fi
+
     - name: Upload Test Results
       if: always()
       uses: actions/upload-artifact@v4
