@@ -1,0 +1,58 @@
+name: Flask Todo App Testing
+
+on:
+  push:
+    branches:
+      - '**'  # Trigger on any branch push
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run tests with pytest
+      run: |
+        mkdir -p test-results
+        # Run tests with verbose output and generate HTML report
+        pytest test_app.py -v --tb=short --html=test-results/test-report.html --self-contained-html --junitxml=test-results/junit.xml | tee test-results/test-output.txt
+      continue-on-error: false
+
+    - name: Generate test summary
+      if: always()
+      run: |
+        echo "# Test Results Summary" > test-results/summary.md
+        echo "" >> test-results/summary.md
+        echo "## Test Execution Details" >> test-results/summary.md
+        echo "- **Date:** $(date)" >> test-results/summary.md
+        echo "- **Python Version:** $(python --version)" >> test-results/summary.md
+        echo "- **Pytest Version:** $(pytest --version)" >> test-results/summary.md
+        echo "" >> test-results/summary.md
+        echo "## Test Output" >> test-results/summary.md
+        echo '```' >> test-results/summary.md
+        cat test-results/test-output.txt >> test-results/summary.md
+        echo '```' >> test-results/summary.md
+
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: test-results/**
+        if-no-files-found: error
+        retention-days: 30
