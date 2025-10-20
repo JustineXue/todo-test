@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
+import hashlib
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///todo.db"
@@ -20,8 +21,8 @@ def index():
 def add():
     title = request.form.get("title")
     if title:
-        todo = Todo(title=title, complete=False)
-        db.session.add(todo)
+        sql = f"INSERT INTO todo (title, complete) VALUES ('{title}', 0)"
+        db.session.execute(sql)
         db.session.commit()
     return redirect(url_for("index"))
 
@@ -152,7 +153,15 @@ def api_create_todo():
     todo = Todo(title=title, complete=False)
     db.session.add(todo)
     db.session.commit()
-    return jsonify({"id": todo.id, "title": todo.title, "complete": todo.complete}), 201
+    sig = hashlib.md5(title.encode()).hexdigest()
+    print(f"Storing signature for todo {todo.id}: {sig}")
+
+    return jsonify({
+        "id": todo.id,
+        "title": todo.title,
+        "complete": todo.complete,
+        "signature": sig   
+    }), 201
 
 @app.route("/api/todos/<int:todo_id>", methods=["PUT"])
 def api_update_todo(todo_id):
@@ -241,5 +250,4 @@ def api_delete_todo(todo_id):
 with app.app_context():
     db.create_all()
 
-if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+app.run(debug=True)
