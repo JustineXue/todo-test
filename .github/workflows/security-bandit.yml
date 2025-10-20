@@ -1,0 +1,24 @@
+name: Bandit Security Scan
+
+on:
+  push:
+    branches:
+      - '**'  # Trigger on any branch push
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  bandit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Bandit
+        uses: pycqa/bandit-action@v1
+        with:
+          targets: "."
+          options: "-r -lll"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bandit-results
+          path: bandit-output.txt

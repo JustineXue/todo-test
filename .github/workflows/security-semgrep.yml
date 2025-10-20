@@ -24,7 +24,8 @@ jobs:
           p/python
           p/owasp-top-ten
           p/security
-        generateSarif: "1"
+          p/crypto
+        generateSarif: true
 
     - name: Generate Semgrep Report
       if: always()
