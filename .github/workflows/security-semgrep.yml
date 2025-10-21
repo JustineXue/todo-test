@@ -19,12 +19,13 @@ jobs:
     - name: Run Semgrep Security Scan
       uses: returntocorp/semgrep-action@v1
       with:
-        config: >-
-          p/security-audit
-          p/python
-          p/owasp-top-ten
-          p/security
-          p/crypto
+        config: p/ci
+        # config: >-
+        #   p/security-audit
+        #   p/python
+        #   p/owasp-top-ten
+        #   p/security
+        #   p/crypto
         generateSarif: true
 
     - name: Generate Semgrep Report
