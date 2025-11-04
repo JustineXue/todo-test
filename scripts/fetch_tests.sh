@@ -4,9 +4,7 @@ set -e
 # Directory to store artifacts
 ARTIFACT_DIR="../artifacts"
 
-# Ensure clean directory
-rm -rf "$ARTIFACT_DIR"
-mkdir -p "$ARTIFACT_DIR"
+rm "$ARTIFACT_DIR/test-output.txt"
 
 echo "📥 Fetching latest test-output artifact from GitHub Actions..."
 
