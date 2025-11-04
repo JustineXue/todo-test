@@ -1,0 +1,74 @@
+============================= test session starts ==============================
+platform linux -- Python 3.9.24, pytest-7.0.1, pluggy-1.6.0 -- /opt/hostedtoolcache/Python/3.9.24/x64/bin/python
+cachedir: .pytest_cache
+rootdir: /home/runner/work/todo-test/todo-test
+collecting ... collected 17 items
+
+test_app.py::test_index_empty PASSED                                     [  5%]
+test_app.py::test_add_todo_and_index FAILED                              [ 11%]
+test_app.py::test_complete_incomplete PASSED                             [ 17%]
+test_app.py::test_delete PASSED                                          [ 23%]
+test_app.py::test_edit PASSED                                            [ 29%]
+test_app.py::test_api_get_todos_empty PASSED                             [ 35%]
+test_app.py::test_api_create_todo_success PASSED                         [ 41%]
+test_app.py::test_api_create_todo_missing_json PASSED                    [ 47%]
+test_app.py::test_api_create_todo_missing_title PASSED                   [ 52%]
+test_app.py::test_api_get_todo PASSED                                    [ 58%]
+test_app.py::test_api_get_todo_404 PASSED                                [ 64%]
+test_app.py::test_api_update_todo_success PASSED                         [ 70%]
+test_app.py::test_api_update_todo_missing_json PASSED                    [ 76%]
+test_app.py::test_api_update_todo_missing_title PASSED                   [ 82%]
+test_app.py::test_api_update_todo_404 PASSED                             [ 88%]
+test_app.py::test_api_delete_todo_success PASSED                         [ 94%]
+test_app.py::test_api_delete_todo_404 PASSED                             [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_add_todo_and_index ____________________________
+test_app.py:22: in test_add_todo_and_index
+    rv = client.post('/add', data={'title': 'Test todo'}, follow_redirects=True)
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/werkzeug/test.py:1039: in post
+    return self.open(*args, **kw)
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/flask/testing.py:222: in open
+    return Client.open(
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/werkzeug/test.py:993: in open
+    response = self.run_wsgi_app(environ.copy(), buffered=buffered)
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/werkzeug/test.py:884: in run_wsgi_app
+    rv = run_wsgi_app(self.application, environ, buffered=buffered)
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/werkzeug/test.py:1119: in run_wsgi_app
+    app_rv = app(environ, start_response)
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/flask/app.py:2463: in __call__
+    return self.wsgi_app(environ, start_response)
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/flask/app.py:2449: in wsgi_app
+    response = self.handle_exception(e)
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/flask/app.py:1866: in handle_exception
+    reraise(exc_type, exc_value, tb)
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/flask/_compat.py:39: in reraise
+    raise value
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/flask/app.py:2446: in wsgi_app
+    response = self.full_dispatch_request()
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/flask/app.py:1951: in full_dispatch_request
+    rv = self.handle_user_exception(e)
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/flask/app.py:1820: in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/flask/_compat.py:39: in reraise
+    raise value
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/flask/app.py:1949: in full_dispatch_request
+    rv = self.dispatch_request()
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/flask/app.py:1935: in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+app.py:25: in add
+    db.session.execute(sql, (title,))
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/sqlalchemy/orm/scoping.py:162: in do
+    return getattr(self.registry(), name)(*args, **kwargs)
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/sqlalchemy/orm/session.py:1268: in execute
+    return self._connection_for_bind(bind, close_with_result=True).execute(
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/sqlalchemy/engine/base.py:982: in execute
+    return meth(self, multiparams, params)
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/sqlalchemy/sql/elements.py:287: in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+/opt/hostedtoolcache/Python/3.9.24/x64/lib/python3.9/site-packages/sqlalchemy/engine/base.py:1061: in _execute_clauseelement
+    keys = list(distilled_params[0].keys())
+E   AttributeError: 'tuple' object has no attribute 'keys'
+=========================== short test summary info ============================
+FAILED test_app.py::test_add_todo_and_index - AttributeError: 'tuple' object ...
+========================= 1 failed, 16 passed in 0.84s =========================
