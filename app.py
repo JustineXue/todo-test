@@ -21,8 +21,8 @@ def index():
 def add():
     title = request.form.get("title")
     if title:
-        sql = "INSERT INTO todo (title, complete) VALUES (?, 0)"
-        db.session.execute(sql, (title,))
+        sql = "INSERT INTO todo (title, complete) VALUES (:title, 0)"
+        db.session.execute(sql, {"title": title})
         db.session.commit()
     return redirect(url_for("index"))
 
