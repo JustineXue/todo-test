@@ -1,0 +1,4 @@
+{
+    "rationale": "The vulnerability occurs because user input is directly concatenated into the SQL query string, allowing SQL injection attacks. The fix uses parameterized queries with placeholders (?), which automatically escape user input and prevent SQL injection. This preserves the original functionality while securing the code.",
+    "patch": "--- app.py\n+++ app.py\n@@ -22,8 +22,8 @@\n     title = request.form.get(\"title\")\n     if title:\n-        sql = f\"INSERT INTO todo (title, complete) VALUES ('{title}', 0)\"\n-        db.session.execute(sql)\n+        sql = \"INSERT INTO todo (title, complete) VALUES (?, 0)\"\n+        db.session.execute(sql, (title,))\n         db.session.commit()\n     return redirect(url_for(\"index\"))"
+  }
