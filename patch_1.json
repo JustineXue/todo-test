@@ -1,0 +1,4 @@
+{
+    "rationale": "The vulnerability is using MD5 hash algorithm which is cryptographically insecure. The fix replaces MD5 with SHA256, which is a secure hash algorithm recommended by security standards. This change maintains the exact same functionality - creating a hex digest of the title for signature purposes - while addressing the security concern. No other changes are needed as the API remains identical between hashlib.md5() and hashlib.sha256().",
+    "patch": "--- a/app.py\n+++ b/app.py\n@@ -153,7 +153,7 @@\n     db.session.add(todo)\n     db.session.commit()\n-    sig = hashlib.md5(title.encode()).hexdigest()\n+    sig = hashlib.sha256(title.encode()).hexdigest()\n     print(f\"Storing signature for todo {todo.id}: {sig}\")\n \n     return jsonify({"
+}
