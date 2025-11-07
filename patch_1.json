@@ -1,0 +1,4 @@
+{
+    "rationale": "The vulnerability was caused by hardcoded debug=True in the Flask app.run() call. This is a security risk in production as it exposes sensitive information. The fix replaces the hardcoded value with an environment variable check (FLASK_DEBUG) that defaults to False, allowing developers to enable debug mode only when explicitly needed via environment configuration, which is the recommended secure practice.",
+    "patch": "--- app.py\t2025-11-07 00:00:00.000000000 +0000\n+++ app.py\t2025-11-07 00:00:00.000000000 +0000\n@@ -1,3 +1,4 @@\n+import os\n from flask import Flask, render_template, request, redirect, url_for, jsonify, session\n from flask_sqlalchemy import SQLAlchemy\n import hashlib\n@@ -253,4 +254,4 @@\n     db.create_all()\n \n if __name__ == \"__main__\":\n-  app.run(debug=True)\n+    app.run(debug=os.environ.get('FLASK_DEBUG', 'False').lower() == 'true')"
+}
