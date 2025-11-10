@@ -1,0 +1,4 @@
+{
+    "rationale": "The original code was vulnerable to SQL injection because it used an f-string to insert user-provided data directly into a raw SQL query. The fix replaces this with the standard, safe way to insert data using the SQLAlchemy ORM. By creating a new `Todo` object and adding it to the session, SQLAlchemy handles the SQL generation and parameterization, which prevents SQL injection attacks. This change is minimal and uses the existing framework to ensure security while preserving the original functionality.",
+    "patch": "--- a/app.py\n+++ b/app.py\n@@ -22,8 +22,8 @@\n def add():\n     title = request.form.get(\"title\")\n     if title:\n-        sql = f\"INSERT INTO todo (title, complete) VALUES ('{title}', 0)\"\n-        db.session.execute(sql)\n+        new_todo = Todo(title=title, complete=False)\n+        db.session.add(new_todo)\n         db.session.commit()\n     return redirect(url_for(\"index\"))\n \n"
+}
