@@ -1,0 +1,4 @@
+{
+    "rationale": "The code uses MD5 (line 156) to generate a signature for todo items. MD5 is cryptographically insecure due to known collision vulnerabilities. Replacing it with SHA-256 provides a secure hash algorithm that is collision-resistant and suitable for cryptographic signatures. This is a minimal change that only affects the hash algorithm while preserving all functionality.",
+    "patch": "--- a/app.py\n+++ b/app.py\n@@ -153,7 +153,7 @@\n     todo = Todo(title=title, complete=False)\n     db.session.add(todo)\n     db.session.commit()\n-    sig = hashlib.md5(title.encode()).hexdigest()\n+    sig = hashlib.sha256(title.encode()).hexdigest()\n     print(f\"Storing signature for todo {todo.id}: {sig}\")\n \n     return jsonify({\n"
+}
