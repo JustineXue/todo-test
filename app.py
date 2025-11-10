@@ -21,8 +21,8 @@ def index():
 def add():
     title = request.form.get("title")
     if title:
-        sql = f"INSERT INTO todo (title, complete) VALUES ('{title}', 0)"
-        db.session.execute(sql)
+        todo = Todo(title=title, complete=False)
+        db.session.add(todo)
         db.session.commit()
     return redirect(url_for("index"))
 
@@ -153,7 +153,7 @@ def api_create_todo():
     todo = Todo(title=title, complete=False)
     db.session.add(todo)
     db.session.commit()
-    sig = hashlib.md5(title.encode()).hexdigest()
+    sig = hashlib.sha256(title.encode()).hexdigest()
     print(f"Storing signature for todo {todo.id}: {sig}")
 
     return jsonify({
@@ -251,4 +251,4 @@ with app.app_context():
     db.create_all()
 
 if __name__ == "__main__":
-  app.run(debug=True)
+    app.run()
