@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import hashlib
+import os
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///todo.db"
@@ -251,4 +252,4 @@ with app.app_context():
     db.create_all()
 
 if __name__ == "__main__":
-  app.run(debug=True)
+    app.run(debug=os.getenv('FLASK_DEBUG') == '1')

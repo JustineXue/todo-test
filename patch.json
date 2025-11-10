@@ -1,0 +1,4 @@
+{
+    "rationale": "The application was running with debug mode enabled, which is a security risk in a production environment. I've modified the application to enable debug mode only if the `FLASK_DEBUG` environment variable is explicitly set to `1`. This makes the application secure by default, while still allowing developers to enable debug mode during development. I also added the `os` import to support reading environment variables.",
+    "patch": "--- a/app.py\n+++ b/app.py\n@@ -2,6 +2,7 @@\n from flask_sqlalchemy import SQLAlchemy\n import hashlib\n+import os\n \n app = Flask(__name__)\n app.config[\"SQLALCHEMY_DATABASE_URI\"] = \"sqlite:///todo.db\"\n@@ -251,4 +252,4 @@\n     db.create_all()\n \n if __name__ == \"__main__\":\n-  app.run(debug=True)\n+  app.run(debug=os.getenv('FLASK_DEBUG') == '1')\n"
+}
