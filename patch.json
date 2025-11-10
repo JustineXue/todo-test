@@ -1,0 +1,4 @@
+{
+    "rationale": "The vulnerability occurs because user input is directly interpolated into a SQL string, allowing SQL injection. The fix replaces the raw SQL with SQLAlchemy's ORM model creation, which uses parameterized queries and is immune to SQL injection while preserving the same functionality.",
+    "patch": "--- a/app.py\n+++ b/app.py\n@@ -21,9 +21,9 @@ def index():\n @app.route(\"/add\", methods=[\"POST\"])\n def add():\n     title = request.form.get(\"title\")\n     if title:\n-        sql = f\"INSERT INTO todo (title, complete) VALUES ('{title}', 0)\"\n-        db.session.execute(sql)\n+        todo = Todo(title=title, complete=False)\n+        db.session.add(todo)\n         db.session.commit()\n     return redirect(url_for(\"index\"))"
+}
