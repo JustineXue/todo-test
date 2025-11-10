@@ -1,0 +1,4 @@
+{
+    "rationale": "Removed the debug flag so the Flask app no longer runs with debug mode enabled in production while preserving default behavior.",
+    "patch": "* Begin Patch\n* Update File: /Users/justinexue/Downloads/flask-todo-app/app.py\n@@\n-if name == \"main\":\n- app.run(debug=True)\n+if name == \"main\":\n+ app.run()\n* End Patch"
+}

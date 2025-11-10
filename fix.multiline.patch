@@ -1,0 +1,8 @@
+* Begin Patch
+* Update File: /Users/justinexue/Downloads/flask-todo-app/app.py
+@@
+-if name == "main":
+- app.run(debug=True)
++if name == "main":
++ app.run()
+* End Patch
