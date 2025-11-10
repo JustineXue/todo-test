@@ -1,0 +1,4 @@
+{
+    "rationale": "The debug=True flag in Flask exposes sensitive information and should not be used in production. This fix removes the hardcoded debug flag and makes it configurable through an environment variable, allowing for secure deployment while maintaining development flexibility.",
+    "patch": "--- /Users/justinexue/Downloads/flask-todo-app/app.py\n+++ /Users/justinexue/Downloads/flask-todo-app/app.py\n@@ -250,4 +250,4 @@\n     db.create_all()\n \n if __name__ == \"__main__\":\n-  app.run(debug=True)\n+  app.run(debug=os.environ.get('FLASK_DEBUG', 'False').lower() == 'true')"
+}
