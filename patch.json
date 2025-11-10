@@ -1,0 +1,4 @@
+{
+    "rationale":"Switched the /add handler to use the existing SQLAlchemy model instead of raw SQL, eliminating the injection risk while preserving behavior. Replaced the insecure MD5 usage with SHA-256 for todo signatures. Disabled Flask’s debug mode in production startup entry point.",
+    "patch":"* Begin Patch\n* Update File: /Users/justinexue/Downloads/flask-todo-app/app.py\n@@\n- if title:\n- sql = f\"INSERT INTO todo (title, complete) VALUES ('{title}', 0)\"\n- db.session.execute(sql)\n- db.session.commit()\n+ if title:\n+ todo = Todo(title=title, complete=False)\n+ db.session.add(todo)\n+ db.session.commit()\n@@\n- sig = hashlib.md5(title.encode()).hexdigest()\n+ sig = hashlib.sha256(title.encode()).hexdigest()\n@@\n-if name == \"main\":\n- app.run(debug=True)\n+if name == \"main\":\n+ app.run()\n* End Patch"
+}

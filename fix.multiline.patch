@@ -1,0 +1,20 @@
+* Begin Patch
+* Update File: /Users/justinexue/Downloads/flask-todo-app/app.py
+@@
+- if title:
+- sql = f"INSERT INTO todo (title, complete) VALUES ('{title}', 0)"
+- db.session.execute(sql)
+- db.session.commit()
++ if title:
++ todo = Todo(title=title, complete=False)
++ db.session.add(todo)
++ db.session.commit()
+@@
+- sig = hashlib.md5(title.encode()).hexdigest()
++ sig = hashlib.sha256(title.encode()).hexdigest()
+@@
+-if name == "main":
+- app.run(debug=True)
++if name == "main":
++ app.run()
+* End Patch
