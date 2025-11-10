@@ -1,0 +1,4 @@
+{
+    "rationale":"Switched the raw f-string SQL insert to a parameterized SQLAlchemy text query and added the required import so user input is safely bound, eliminating the SQL injection risk.",
+    "patch":"* Begin Patch\n* Update File: /Users/justinexue/Downloads/flask-todo-app/app.py\n@@\n-from flask_sqlalchemy import SQLAlchemy\n-import hashlib\n+from flask_sqlalchemy import SQLAlchemy\n+from sqlalchemy import text\n+import hashlib\n@@\n- sql = f\"INSERT INTO todo (title, complete) VALUES ('{title}', 0)\"\n- db.session.execute(sql)\n+ sql = text(\"INSERT INTO todo (title, complete) VALUES (:title, 0)\")\n+ db.session.execute(sql, {\"title\": title})\n* End Patch"
+}

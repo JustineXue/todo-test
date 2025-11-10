@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 import hashlib
 
 app = Flask(__name__)
@@ -21,8 +22,8 @@ def index():
 def add():
     title = request.form.get("title")
     if title:
-        sql = f"INSERT INTO todo (title, complete) VALUES ('{title}', 0)"
-        db.session.execute(sql)
+        sql = text("INSERT INTO todo (title, complete) VALUES (:title, 0)")
+        db.session.execute(sql, {"title": title})
         db.session.commit()
     return redirect(url_for("index"))
 
