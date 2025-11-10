@@ -1,0 +1,73 @@
+=== Running: SEMGREP_RULES="p/owasp-top-ten" semgrep ci
+                  
+                  
+┌────────────────┐
+│ Debugging Info │
+└────────────────┘
+                  
+  SCAN ENVIRONMENT
+  versions    - semgrep 1.36.0 on python 3.11.4                                
+  environment - running in environment github-actions, triggering event is push
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 18 files tracked by git with 542 Code rules:
+                                                                                
+  Language      Rules   Files          Origin      Rules                        
+ ─────────────────────────────        ───────────────────                       
+  <multilang>       5      36          Community     542                        
+  yaml             19       5                                                   
+  bash              1       3                                                   
+  python          147       2                                                   
+  json              3       1                                                   
+  html              1       1                                                   
+                                                                                
+                            
+                            
+┌──────────────────────────┐
+│ 2 Blocking Code Findings │
+└──────────────────────────┘
+           
+    app.py 
+       python.flask.security.audit.debug-enabled.debug-enabled                  
+          Detected Flask app with debug=True. Do not deploy to production with  
+  this flag enabled as it                                                       
+          will leak sensitive information. Instead, consider using Flask        
+  configuration variables or                                                    
+          setting 'debug' using system environment variables.                   
+          Details: https://sg.run/dKrd                                          
+                                                                                
+          254┆ app.run(debug=True)
+            ⋮┆----------------------------------------
+       python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm
+  -md5                                                                          
+          Detected MD5 hash algorithm which is considered insecure. MD5 is not  
+  collision resistant and                                                       
+          is therefore not suitable as a cryptographic signature. Use SHA256 or 
+  SHA3 instead.                                                                 
+          Details: https://sg.run/vYrY                                          
+                                                                                
+          156┆ sig = hashlib.md5(title.encode()).hexdigest()
+                            
+  BLOCKING CODE RULES FIRED:
+    python.flask.security.audit.debug-enabled.debug-enabled
+    python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md
+  5                                                                             
+
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+Some files were skipped or only partially analyzed.
+  Scan was limited to files tracked by git.
+
+CI scan completed successfully.
+  Found 2 findings (2 blocking) from 542 rules.
+  Has findings for blocking rules so exiting with code 1
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+
+Versions prior to 1.76.0 are no longer supported by Semgrep.dev, please upgrade.

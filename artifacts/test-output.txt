@@ -1,0 +1,25 @@
+============================= test session starts ==============================
+platform linux -- Python 3.9.24, pytest-7.0.1, pluggy-1.6.0 -- /opt/hostedtoolcache/Python/3.9.24/x64/bin/python
+cachedir: .pytest_cache
+rootdir: /home/runner/work/todo-test/todo-test
+collecting ... collected 17 items
+
+test_app.py::test_index_empty PASSED                                     [  5%]
+test_app.py::test_add_todo_and_index PASSED                              [ 11%]
+test_app.py::test_complete_incomplete PASSED                             [ 17%]
+test_app.py::test_delete PASSED                                          [ 23%]
+test_app.py::test_edit PASSED                                            [ 29%]
+test_app.py::test_api_get_todos_empty PASSED                             [ 35%]
+test_app.py::test_api_create_todo_success PASSED                         [ 41%]
+test_app.py::test_api_create_todo_missing_json PASSED                    [ 47%]
+test_app.py::test_api_create_todo_missing_title PASSED                   [ 52%]
+test_app.py::test_api_get_todo PASSED                                    [ 58%]
+test_app.py::test_api_get_todo_404 PASSED                                [ 64%]
+test_app.py::test_api_update_todo_success PASSED                         [ 70%]
+test_app.py::test_api_update_todo_missing_json PASSED                    [ 76%]
+test_app.py::test_api_update_todo_missing_title PASSED                   [ 82%]
+test_app.py::test_api_update_todo_404 PASSED                             [ 88%]
+test_app.py::test_api_delete_todo_success PASSED                         [ 94%]
+test_app.py::test_api_delete_todo_404 PASSED                             [100%]
+
+============================== 17 passed in 0.57s ==============================
