@@ -1,0 +1,4 @@
+{
+    "rationale": "Replace insecure MD5 digest with SHA-256 to maintain a signature while avoiding known collision vulnerabilities.",
+    "patch": "* Begin Patch\n* Update File: /Users/justinexue/Downloads/flask-todo-app/app.py\n@@\n- sig = hashlib.md5(title.encode()).hexdigest()\n+ sig = hashlib.sha256(title.encode()).hexdigest()\n* End Patch"
+}

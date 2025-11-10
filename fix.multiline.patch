@@ -1,0 +1,6 @@
+* Begin Patch
+* Update File: /Users/justinexue/Downloads/flask-todo-app/app.py
+@@
+- sig = hashlib.md5(title.encode()).hexdigest()
++ sig = hashlib.sha256(title.encode()).hexdigest()
+* End Patch
