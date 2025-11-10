@@ -1,0 +1,100 @@
+=== Running: SEMGREP_RULES="p/owasp-top-ten" semgrep ci
+                  
+                  
+┌────────────────┐
+│ Debugging Info │
+└────────────────┘
+                  
+  SCAN ENVIRONMENT
+  versions    - semgrep 1.36.0 on python 3.11.4                                
+  environment - running in environment github-actions, triggering event is push
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 18 files tracked by git with 542 Code rules:
+                                                                                
+  Language      Rules   Files          Origin      Rules                        
+ ─────────────────────────────        ───────────────────                       
+  <multilang>       5      36          Community     542                        
+  yaml             19       5                                                   
+  bash              1       3                                                   
+  python          147       2                                                   
+  json              3       1                                                   
+  html              1       1                                                   
+                                                                                
+                            
+                            
+┌──────────────────────────┐
+│ 3 Blocking Code Findings │
+└──────────────────────────┘
+           
+    app.py 
+       python.django.security.injection.sql.sql-injection-using-db-cursor-execut
+  e.sql-injection-db-cursor-                                                    
+       execute                                                                  
+          User-controlled data from a request is passed to 'execute()'. This    
+  could lead to a SQL                                                           
+          injection and therefore protected information could be leaked.        
+  Instead, use django's                                                         
+          QuerySets, which are built with query parameterization and therefore  
+  not vulnerable to sql                                                         
+          injection. For example, you could use                                 
+  `Entry.objects.filter(date=2006)`.                                            
+          Details: https://sg.run/qx7y                                          
+                                                                                
+           24┆ title = request.form.get("title")
+           25┆ if title:
+           26┆     sql = f"INSERT INTO todo (title, complete) VALUES ('{title}',
+  0)"                                                                           
+           27┆     db.session.execute(sql)
+           28┆     db.session.commit()
+            ⋮┆----------------------------------------
+       python.flask.security.injection.tainted-sql-string.tainted-sql-string    
+          Detected user input used to manually construct a SQL string. This is  
+  usually bad practice                                                          
+          because manual construction could accidentally result in a SQL        
+  injection. An attacker could                                                  
+          use a SQL injection to steal or modify contents of the database.      
+  Instead, use a                                                                
+          parameterized query which is available by default in most database    
+  engines. Alternatively,                                                       
+          consider using an object-relational mapper (ORM) such as SQLAlchemy   
+  which will protect your                                                       
+          queries.                                                              
+          Details: https://sg.run/JxZj                                          
+                                                                                
+           26┆ sql = f"INSERT INTO todo (title, complete) VALUES ('{title}', 0)"
+            ⋮┆----------------------------------------
+       python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm
+  -md5                                                                          
+          Detected MD5 hash algorithm which is considered insecure. MD5 is not  
+  collision resistant and                                                       
+          is therefore not suitable as a cryptographic signature. Use SHA256 or 
+  SHA3 instead.                                                                 
+          Details: https://sg.run/vYrY                                          
+                                                                                
+          158┆ sig = hashlib.md5(title.encode()).hexdigest()
+                            
+  BLOCKING CODE RULES FIRED:
+    python.django.security.injection.sql.sql-injection-using-db-cursor-execute.s
+  ql-injection-db-cursor-execute                                                
+    python.flask.security.injection.tainted-sql-string.tainted-sql-string
+    python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md
+  5                                                                             
+
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+Some files were skipped or only partially analyzed.
+  Scan was limited to files tracked by git.
+
+CI scan completed successfully.
+  Found 3 findings (3 blocking) from 542 rules.
+  Has findings for blocking rules so exiting with code 1
+ A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+
+Versions prior to 1.76.0 are no longer supported by Semgrep.dev, please upgrade.
