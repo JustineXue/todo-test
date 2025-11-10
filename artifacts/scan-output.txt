@@ -1,0 +1,201 @@
+=== Running: SEMGREP_RULES="p/owasp-top-ten" semgrep ci
+                  
+                  
+┌────────────────┐
+│ Debugging Info │
+└────────────────┘
+                  
+  SCAN ENVIRONMENT
+  versions    - semgrep 1.36.0 on python 3.11.4                                
+  environment - running in environment github-actions, triggering event is push
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 18 files tracked by git with 542 Code rules:
+                                                                                
+  Language      Rules   Files          Origin      Rules                        
+ ─────────────────────────────        ───────────────────                       
+  <multilang>       5      36          Community     542                        
+  yaml             19       5                                                   
+  bash              1       3                                                   
+  python          147       2                                                   
+  json              3       1                                                   
+  html              1       1                                                   
+                                                                                
+                            
+                            
+┌──────────────────────────┐
+│ 3 Blocking Code Findings │
+└──────────────────────────┘
+           
+    app.py 
+       python.django.security.injection.sql.sql-injection-using-db-cursor-execut
+  e.sql-injection-db-cursor-                                                    
+       execute                                                                  
+          User-controlled data from a request is passed to 'execute()'. This    
+  could lead to a SQL                                                           
+          injection and therefore protected information could be leaked.        
+  Instead, use django's                                                         
+          QuerySets, which are built with query parameterization and therefore  
+  not vulnerable to sql                                                         
+          injection. For example, you could use                                 
+  `Entry.objects.filter(date=2006)`.                                            
+          Details: https://sg.run/qx7y                                          
+                                                                                
+           22┆ title = request.form.get("title")
+           23┆ if title:
+           24┆     sql = f"INSERT INTO todo (title, complete) VALUES ('{title}',
+  0)"                                                                           
+           25┆     db.session.execute(sql)
+           26┆     db.session.commit()
+            ⋮┆----------------------------------------
+       python.flask.security.audit.debug-enabled.debug-enabled                  
+          Detected Flask app with debug=True. Do not deploy to production with  
+  this flag enabled as it                                                       
+          will leak sensitive information. Instead, consider using Flask        
+  configuration variables or                                                    
+          setting 'debug' using system environment variables.                   
+          Details: https://sg.run/dKrd                                          
+                                                                                
+          254┆ app.run(debug=True)
+            ⋮┆----------------------------------------
+       python.flask.security.injection.tainted-sql-string.tainted-sql-string    
+          Detected user input used to manually construct a SQL string. This is  
+  usually bad practice                                                          
+          because manual construction could accidentally result in a SQL        
+  injection. An attacker could                                                  
+          use a SQL injection to steal or modify contents of the database.      
+  Instead, use a                                                                
+          parameterized query which is available by default in most database    
+  engines. Alternatively,                                                       
+          consider using an object-relational mapper (ORM) such as SQLAlchemy   
+  which will protect your                                                       
+          queries.                                                              
+          Details: https://sg.run/JxZj                                          
+                                                                                
+           24┆ sql = f"INSERT INTO todo (title, complete) VALUES ('{title}', 0)"
+                            
+  BLOCKING CODE RULES FIRED:
+    python.django.security.injection.sql.sql-injection-using-db-cursor-execute.s
+  ql-injection-db-cursor-execute                                                
+    python.flask.security.audit.debug-enabled.debug-enabled
+    python.flask.security.injection.tainted-sql-string.tainted-sql-string
+
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+Some files were skipped or only partially analyzed.
+  Scan was limited to files tracked by git.
+
+CI scan completed successfully.
+  Found 3 findings (3 blocking) from 542 rules.
+  Has findings for blocking rules so exiting with code 1
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+
+4s
+Run returntocorp/semgrep-action@v1
+/usr/bin/docker run --name returntocorpsemgrepagentv1_320214 --label 482b2a --workdir /github/workspace --rm -e "INPUT_CONFIG" -e "INPUT_PUBLISHTOKEN" -e "HOME" -e "GITHUB_JOB" -e "GITHUB_REF" -e "GITHUB_SHA" -e "GITHUB_REPOSITORY" -e "GITHUB_REPOSITORY_OWNER" -e "GITHUB_REPOSITORY_OWNER_ID" -e "GITHUB_RUN_ID" -e "GITHUB_RUN_NUMBER" -e "GITHUB_RETENTION_DAYS" -e "GITHUB_RUN_ATTEMPT" -e "GITHUB_ACTOR_ID" -e "GITHUB_ACTOR" -e "GITHUB_WORKFLOW" -e "GITHUB_HEAD_REF" -e "GITHUB_BASE_REF" -e "GITHUB_EVENT_NAME" -e "GITHUB_SERVER_URL" -e "GITHUB_API_URL" -e "GITHUB_GRAPHQL_URL" -e "GITHUB_REF_NAME" -e "GITHUB_REF_PROTECTED" -e "GITHUB_REF_TYPE" -e "GITHUB_WORKFLOW_REF" -e "GITHUB_WORKFLOW_SHA" -e "GITHUB_REPOSITORY_ID" -e "GITHUB_TRIGGERING_ACTOR" -e "GITHUB_WORKSPACE" -e "GITHUB_ACTION" -e "GITHUB_EVENT_PATH" -e "GITHUB_ACTION_REPOSITORY" -e "GITHUB_ACTION_REF" -e "GITHUB_PATH" -e "GITHUB_ENV" -e "GITHUB_STEP_SUMMARY" -e "GITHUB_STATE" -e "GITHUB_OUTPUT" -e "RUNNER_OS" -e "RUNNER_ARCH" -e "RUNNER_NAME" -e "RUNNER_ENVIRONMENT" -e "RUNNER_TOOL_CACHE" -e "RUNNER_TEMP" -e "RUNNER_WORKSPACE" -e "ACTIONS_RUNTIME_URL" -e "ACTIONS_RUNTIME_TOKEN" -e "ACTIONS_CACHE_URL" -e "ACTIONS_RESULTS_URL" -e GITHUB_ACTIONS=true -e CI=true -v "/var/run/docker.sock":"/var/run/docker.sock" -v "/home/runner/work/_temp/_github_home":"/github/home" -v "/home/runner/work/_temp/_github_workflow":"/github/workflow" -v "/home/runner/work/_temp/_runner_file_commands":"/github/file_commands" -v "/home/runner/work/todo-test/todo-test":"/github/workspace" returntocorp/semgrep-agent:v1
+=== Running: SEMGREP_RULES="p/owasp-top-ten" semgrep ci
+                  
+                  
+┌────────────────┐
+│ Debugging Info │
+└────────────────┘
+                  
+  SCAN ENVIRONMENT
+  versions    - semgrep 1.36.0 on python 3.11.4                                
+  environment - running in environment github-actions, triggering event is push
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 18 files tracked by git with 542 Code rules:
+                                                                                
+  Language      Rules   Files          Origin      Rules                        
+ ─────────────────────────────        ───────────────────                       
+  <multilang>       5      36          Community     542                        
+  yaml             19       5                                                   
+  bash              1       3                                                   
+  python          147       2                                                   
+  json              3       1                                                   
+  html              1       1                                                   
+                                                                                
+                            
+                            
+┌──────────────────────────┐
+│ 3 Blocking Code Findings │
+└──────────────────────────┘
+           
+    app.py 
+       python.django.security.injection.sql.sql-injection-using-db-cursor-execut
+  e.sql-injection-db-cursor-                                                    
+       execute                                                                  
+          User-controlled data from a request is passed to 'execute()'. This    
+  could lead to a SQL                                                           
+          injection and therefore protected information could be leaked.        
+  Instead, use django's                                                         
+          QuerySets, which are built with query parameterization and therefore  
+  not vulnerable to sql                                                         
+          injection. For example, you could use                                 
+  `Entry.objects.filter(date=2006)`.                                            
+          Details: https://sg.run/qx7y                                          
+                                                                                
+           22┆ title = request.form.get("title")
+           23┆ if title:
+           24┆     sql = f"INSERT INTO todo (title, complete) VALUES ('{title}',
+  0)"                                                                           
+           25┆     db.session.execute(sql)
+           26┆     db.session.commit()
+            ⋮┆----------------------------------------
+       python.flask.security.audit.debug-enabled.debug-enabled                  
+          Detected Flask app with debug=True. Do not deploy to production with  
+  this flag enabled as it                                                       
+          will leak sensitive information. Instead, consider using Flask        
+  configuration variables or                                                    
+          setting 'debug' using system environment variables.                   
+          Details: https://sg.run/dKrd                                          
+                                                                                
+          254┆ app.run(debug=True)
+            ⋮┆----------------------------------------
+       python.flask.security.injection.tainted-sql-string.tainted-sql-string    
+          Detected user input used to manually construct a SQL string. This is  
+  usually bad practice                                                          
+          because manual construction could accidentally result in a SQL        
+  injection. An attacker could                                                  
+          use a SQL injection to steal or modify contents of the database.      
+  Instead, use a                                                                
+          parameterized query which is available by default in most database    
+  engines. Alternatively,                                                       
+          consider using an object-relational mapper (ORM) such as SQLAlchemy   
+  which will protect your                                                       
+          queries.                                                              
+          Details: https://sg.run/JxZj                                          
+                                                                                
+           24┆ sql = f"INSERT INTO todo (title, complete) VALUES ('{title}', 0)"
+                            
+  BLOCKING CODE RULES FIRED:
+    python.django.security.injection.sql.sql-injection-using-db-cursor-execute.s
+  ql-injection-db-cursor-execute                                                
+    python.flask.security.audit.debug-enabled.debug-enabled
+    python.flask.security.injection.tainted-sql-string.tainted-sql-string
+
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+Some files were skipped or only partially analyzed.
+  Scan was limited to files tracked by git.
+
+CI scan completed successfully.
+  Found 3 findings (3 blocking) from 542 rules.
+  Has findings for blocking rules so exiting with code 1
+
+A new version of Semgrep is available. See https://semgrep.dev/docs/upgrading
+
+Versions prior to 1.76.0 are no longer supported by Semgrep.dev, please upgrade.
