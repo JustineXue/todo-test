@@ -1,0 +1,11 @@
+--- app.py
++++ app.py
+@@ -153,7 +153,7 @@ def api_create_todo():
+     todo = Todo(title=title, complete=False)
+     db.session.add(todo)
+     db.session.commit()
+-    sig = hashlib.md5(title.encode()).hexdigest()
++    sig = hashlib.sha256(title.encode()).hexdigest()
+     print(f"Storing signature for todo {todo.id}: {sig}")
+ 
+     return jsonify({

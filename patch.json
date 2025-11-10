@@ -1,0 +1,4 @@
+{
+    "rationale": "The MD5 hash algorithm is cryptographically broken and vulnerable to collision attacks. The signature appears to be used for logging/debugging purposes rather than security-critical operations. Replacing MD5 with SHA256 provides a more secure hash while maintaining the same functionality for debugging/logging purposes.",
+    "patch": "--- app.py\n+++ app.py\n@@ -153,7 +153,7 @@ def api_create_todo():\n     todo = Todo(title=title, complete=False)\n     db.session.add(todo)\n     db.session.commit()\n-    sig = hashlib.md5(title.encode()).hexdigest()\n+    sig = hashlib.sha256(title.encode()).hexdigest()\n     print(f\"Storing signature for todo {todo.id}: {sig}\")\n \n     return jsonify({"
+}
