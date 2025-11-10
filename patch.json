@@ -1,0 +1,4 @@
+{
+    "rationale": "The vulnerability exists because debug=True is hardcoded in app.run(), which would leak sensitive information if deployed to production. The fix replaces the hardcoded True value with an environment variable check using os.getenv(). This allows debug mode to be controlled via the FLASK_DEBUG environment variable (defaulting to False for safety), following Flask best practices. The os module import is added at the top of the file.",
+    "patch": "--- a/app.py\n+++ b/app.py\n@@ -1,6 +1,7 @@\n from flask import Flask, render_template, request, redirect, url_for, jsonify\n from flask_sqlalchemy import SQLAlchemy\n import hashlib\n+import os\n \n app = Flask(__name__)\n app.config[\"SQLALCHEMY_DATABASE_URI\"] = \"sqlite:///todo.db\"\n@@ -251,4 +252,4 @@\n     db.create_all()\n \n if __name__ == \"__main__\":\n-  app.run(debug=True)\n+  app.run(debug=os.getenv('FLASK_DEBUG', 'False').lower() in ('true', '1', 't'))"
+}
