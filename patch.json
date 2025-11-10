@@ -1,0 +1,4 @@
+{
+    "rationale": "The MD5 hash algorithm is cryptographically weak and susceptible to collision attacks. This patch replaces the insecure MD5 algorithm with SHA256, a more secure and recommended hashing algorithm, to ensure the integrity of the generated signature.",
+    "patch": "--- a/app.py\n+++ b/app.py\n@@ -153,7 +153,7 @@\n todo = Todo(title=title, complete=False)\n db.session.add(todo)\n db.session.commit()\n- sig = hashlib.md5(title.encode()).hexdigest()\n+ sig = hashlib.sha256(title.encode()).hexdigest()\n print(f\"Storing signature for todo {todo.id}: {sig}\")\n \n return jsonify({\n"
+}
